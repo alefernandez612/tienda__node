@@ -20,16 +20,28 @@ router.post('/', (req, res) => {
         .then(product => res.status(201).json(product))
         .catch(err => res.status(500).json({ error: err.message }));
 });
+
 router.put('/:productId', async (req, res) => {
     try {
         const { productId } = req.params;
-        // const product = await Product.findByIdAndUpdate(productId, req.body, { new: true });
-        const product = await Product.findOneAndUpdate(productId, req.body);
+        const product = await Product.findByIdAndUpdate(productId, req.body, { new: true });
         res.json(product);
     } catch (err) {
         res.json({ error: err.message });
     }
+});
 
+router.delete('/:productId', async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const product = await Product.findByIdAndDelete(productId);
+        res.json({
+            message: 'El producto fue borrado satisfactoriamente.',
+            product
+        });
+    } catch (err) {
+        res.json({ error: err.message });
+    }
 });
 
 module.exports = router;

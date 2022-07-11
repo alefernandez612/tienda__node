@@ -88,4 +88,29 @@ describe('Products tests', () => {
             expect(response.body.stock).toBe(200);
         });
     });
+
+    describe('DELETE api/products/:productId', () => {
+
+        let response;
+        let productToDelete;
+        beforeEach(async () => {
+            productToDelete = await Product.create({ name: 'Camiseta', description: 'Camiseta de manga corta perfecta.', price: 9, stock: 1000, department: 'test', available: true });
+
+            response = await request(app).delete(`/api/products/${productToDelete._id}`).send();
+        });
+
+        afterEach(async () => {
+            await Product.findByIdAndDelete(productToDelete._id);
+        });
+
+        it('Producto creado correctamente', () => {
+            expect(response.statusCode).toBe(200);
+            expect(response.headers['content-type']).toContain('application/json');
+        });
+
+        it('debería devolver el id nulo.', async () => {
+            const product = await Product.findById(productToDelete._id);
+            expect(product).toBeNull();
+        });
+    });
 });
